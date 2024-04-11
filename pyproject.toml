@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "fortune"
+version = "0.1.0"
+description = ""
+authors = ["Seou0912 <myuni0912@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.4"
+django-allauth = "^0.61.1"
+django-restframework = "^0.0.1"
+openai = "0.28"
+rest-framework-simplejwt = "^0.0.2"
+django-extensions = "^3.2.3"
+djangorestframework = "^3.15.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
