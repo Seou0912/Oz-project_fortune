@@ -24,7 +24,7 @@ with open(BASE_DIR / ".config_secret" / "secret_common.json") as f:
 
 CONFIG_SECRET = json.loads(config_secret_common_str)
 SECRET_KEY = CONFIG_SECRET["SECRET_KEY"]
-OPENAI_API_KEY = 
+OPENAI_API_KEY = CONFIG_SECRET["OPENAI_API_KEY"]
 
 
 DEBUG = True
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "dailyquote",
     "zodiac",
     "horoscope",
+    "mbti",
 ] + THIRD_PARTY
 
 SITE_ID = 1
@@ -165,3 +166,5 @@ SIMPLE_JWT = {
 
 # Allauth
 ACCOUNT_LOGOUT_REDIRECT_URL = reverse_lazy("accounts:login")
+
+SESSION_COOKIE_AGE = 3600

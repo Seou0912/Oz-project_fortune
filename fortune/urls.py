@@ -9,4 +9,5 @@ urlpatterns = [
     path("dailyquote/", include("dailyquote.urls")),  # dailyquote 앱의 URL 패턴 포함
     path("zodiac/", include("zodiac.urls")),  # zodiac 앱의 URL 패턴 포함
     path("horoscope/", include("horoscope.urls")),  # horoscope 앱의 URL 패턴 포함
+    path("mbti/", include("mbti.urls")),  #
 ]

@@ -29,18 +29,27 @@ def get_zodiac_from_birthyear(birthyear):
 
 # 사용자의 띠와 오늘의 운세를 보여주는 뷰
 def daily_zodiac(request):
-    user = request.user  # 현재 로그인한 사용자
-    birthyear = user.birthdate.year  # 사용자 모델에서 생년월일 정보 가져오기
+    birthdate = request.user.birth_date  # 현재 로그인한 사용자
+    birthyear = birthdate.year  # 사용자 모델에서 생년월일 정보 가져오기
 
     user_zodiac = get_zodiac_from_birthyear(birthyear)  # 띠 계산
 
     # OpenAI를 사용하여 오늘의 운세 생성
     response = openai.ChatCompletion.create(
-        engine="gpt-4-turbo", prompt=f"오늘의 {user_zodiac} 운세는?", max_tokens=100
+        model="gpt-4-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"오늘은 {user_zodiac}띠가 뭘 조심하면좋은지 운세를 간단하게  500자로 생성해주세요.",
+            }
+        ],
+        temperature=0.7,
+        max_tokens=150,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
     )
-    today_fortune = response.choices[0].text.strip()
+    today_fortune = response["choices"][0]["message"]["content"].strip()
 
     # 결과를 템플릿에 전달
-    return render(
-        request, "zodiac.html", {"zodiac": user_zodiac, "fortune": today_fortune}
-    )
+    return render(request, "zodiac.html", {"today_fortune": today_fortune})

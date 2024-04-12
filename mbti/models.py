@@ -3,9 +3,10 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
-    nickname = models.OneToOneField(User, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=50)
     mbti = models.CharField(max_length=4)
+    quote = models.CharField(max_length=300)
 
 
 def __str__(self):
-    return self.user.nickname
+    return self.user

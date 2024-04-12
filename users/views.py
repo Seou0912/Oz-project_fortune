@@ -1,73 +1,58 @@
-from django.contrib.auth import get_user_model, authenticate, login
-from django.http import JsonResponse
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.views import View
+from users.forms import LoginForm, SignupForm
+from users.models import User
 
 
-class LoginView(View):
-    def get(self, request):
-        return render(
-            request, "login.html"
-        )  # login.html은 로그인 페이지의 템플릿 파일입니다.
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("/dailyquote/today")
 
-    def post(self, request):
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            password1 = form.cleaned_data["password1"]
+
+            user = authenticate(email=email, password=password1)
+
+            if user:
+                login(request, user)
+                return redirect("/dailyquote/today/")
+            else:
+                form.add_error(None, "입력한 자격증명에 해당하는 사용자가 없습니다.")
+
+        context = {"form": form}
+        return render(request, "login.html", context)
+
+    else:
+        form = LoginForm()
+        context = {"form": form}
+        return render(request, "login.html", context)
+
+
+def logout_view(request):
+    logout(request)
+
+    return redirect("/")
+
+
+def signup(request):
+    if request.method == "POST":
+        form = SignupForm(data=request.POST, files=request.FILES)
+
+        if form.is_valid():
+            user = form.save()
+            user.birth_date = form.cleaned_data["birth_date"]
+            user.mbti = form.cleaned_data["mbti"]
+            user.nickname = form.cleaned_data["nickname"]
+            user.save()
             login(request, user)
-            return redirect("메인 페이지 URL")
-        else:
-            return render(
-                request,
-                "login.html",
-                {"error": "이메일 또는 비밀번호가 잘못되었습니다."},
-            )
+            return redirect("/dailyquote/today/")
 
+    else:
+        form = SignupForm()
 
-User = get_user_model()
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class RegisterView(View):
-    def post(self, request, *args, **kwargs):
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        birth_date = request.POST.get("birth_date")
-        nickname = request.POST.get("nickname")
-        mbti = request.POST.get("mbti")
-
-        if not (email and password and birth_date and nickname and mbti):
-            return JsonResponse(
-                {"message": "필수 정보를 모두 입력해주세요."}, status=400
-            )
-
-        User.objects.create_user(
-            email=email,
-            password=password,
-            birth_date=birth_date,
-            nickname=nickname,
-            mbti=mbti,
-        )
-        return JsonResponse({"message": "회원가입 성공!"}, status=201)
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class LoginView(View):
-    def post(self, request, *args, **kwargs):
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({"message": "로그인 성공!"}, status=200)
-        else:
-            return JsonResponse(
-                {"message": "로그인 실패. 이메일 또는 비밀번호를 확인해주세요."},
-                status=401,
-            )
+    context = {"form": form}
+    return render(request, "signup.html", context)

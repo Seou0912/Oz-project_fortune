@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
+from .views import constellation_fortune
 
 urlpatterns = [
-    path("today/", views.get_horoscope, name="get_horoscope"),
+    path("today/", constellation_fortune),
 ]

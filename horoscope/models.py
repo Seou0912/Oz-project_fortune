@@ -2,8 +2,9 @@ from django.db import models
 
 
 class UserBirthday(models.Model):
-    birthday = models.DateField()
+    birth_date = models.DateField()
     zodiac_sign = models.CharField(max_length=10)
+    horoscope = models.TextField()
 
     def __str__(self):
-        return f"{self.zodiac_sign} ({self.birthday})"
+        return self.name

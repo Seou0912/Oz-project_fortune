@@ -1,51 +1,76 @@
-from datetime import datetime
+from django.shortcuts import render, redirect
 from django.conf import settings
 import openai
 
-# OpenAI API 키 설정
-openai.api_key = settings.OPENAI_API_KEY
 
-
-# 사용자의 생년월일로부터 별자리 결정하는 함수
 def get_zodiac_sign(month, day):
-    # 별자리 날짜 범위
     zodiac_dates = [
         (120, "염소자리"),
-        (218, "물병자리"),
-        (320, "물고기자리"),
-        (420, "양자리"),
-        (521, "황소자리"),
-        (621, "쌍둥이자리"),
-        (722, "게자리"),
-        (823, "사자자리"),
-        (923, "처녀자리"),
-        (1023, "천칭자리"),
-        (1122, "전갈자리"),
+        (219, "물병자리"),
+        (321, "물고기자리"),
+        (421, "양자리"),
+        (522, "황소자리"),
+        (622, "쌍둥이자리"),
+        (723, "게자리"),
+        (824, "사자자리"),
+        (924, "처녀자리"),
+        (1024, "천칭자리"),
+        (1123, "전갈자리"),
         (1222, "사수자리"),
-        (1231, "염소자리"),
+        (1232, "염소자리"),
     ]
+
     zodiac_sign = next(
-        zodiac for zodiac, sign in zodiac_dates if month * 100 + day <= zodiac
+        sign
+        for end_date, sign in zodiac_dates
+        if (month == 12 and day >= 22)
+        or (month == 1 and day <= end_date)
+        or (month == 2 and day <= end_date)
+        or (month == 3 and day <= end_date)
+        or (month == 4 and day <= end_date)
+        or (month == 5 and day <= end_date)
+        or (month == 6 and day <= end_date)
+        or (month == 7 and day <= end_date)
+        or (month == 8 and day <= end_date)
+        or (month == 9 and day <= end_date)
+        or (month == 10 and day <= end_date)
+        or (month == 11 and day <= end_date)
     )
     return zodiac_sign
 
 
-# GPT-4-Turbo를 사용하여 별자리 운세 요청하는 함수
-def get_horoscope(zodiac_sign):
+def constellation_fortune(request):
+    zodiac_sign = get_zodiac_sign(
+        request.user.birth_date.month, request.user.birth_date.day
+    )
+    horoscope = _constellation_fortune(request, zodiac_sign)
+    print("운세:", horoscope)
+    return render(request, "horoscope.html", {"horoscope": horoscope})
+
+
+def _constellation_fortune(request, zodiac_sign):
+    if not request.user.is_authenticated:
+        return redirect("/")
+
+    openai.api_key = settings.OPENAI_API_KEY
+
     response = openai.ChatCompletion.create(
         model="gpt-4-turbo",
         messages=[
-            {"role": "system", "content": "별자리 운세를 알려주세요."},
-            {"role": "user", "content": f"{zodiac_sign} 운세는 어떤가요?"},
+            {
+                "role": "user",
+                "content": f"{zodiac_sign} 에 맞는 오늘의 운세에 조언이나 충고 해주세요.",
+            },
         ],
+        temperature=0.7,
+        max_tokens=150,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
     )
-    return response.choices[0].message["content"]
 
-
-# 사용자의 생년월일 예시
-user_birthday = datetime(1990, 6, 24)
-zodiac_sign = get_zodiac_sign(user_birthday.month, user_birthday.day)
-
-# 별자리 운세 요청 및 결과 출력
-horoscope = get_horoscope(zodiac_sign)
-print(f"{zodiac_sign}의 운세: {horoscope}")
+    if response.choices:
+        horoscope = response.choices[0]["message"]["content"].strip()
+        return horoscope
+    else:
+        return "운세를 불러오는 중에 오류가 발생했습니다."

@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager
 from django.db import models
 
 
@@ -16,10 +16,18 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password):
         user = self.create_user(email=email, password=password)
 
-        user.is_staff = True  # 관리자 페이지 접근을 위해 필요
+        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
+
+class Member(models.Model):
+    email = models.EmailField()
+    password = models.CharField(max_length=100)
+    birth_date = models.DateField()
+    nickname = models.CharField(max_length=50)
+    mbti = models.CharField(max_length=10)
 
 
 class User(AbstractBaseUser):
