@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 import openai
+from .models import UserBirthday  # 가정: Horoscope 모델이 있다고 가정합니다.
 
 
 def get_zodiac_sign(month, day):
@@ -39,16 +40,28 @@ def get_zodiac_sign(month, day):
     return zodiac_sign
 
 
-def constellation_fortune(request):
+def fortune(request):
+    if not request.user.is_authenticated:
+        return redirect("/")
+
     zodiac_sign = get_zodiac_sign(
         request.user.birth_date.month, request.user.birth_date.day
     )
-    horoscope = _constellation_fortune(request, zodiac_sign)
-    print("운세:", horoscope)
-    return render(request, "horoscope.html", {"horoscope": horoscope})
+    horoscope_text = constellation_fortune(request, zodiac_sign)
+    print("운세:", horoscope_text)
+
+    # UserBirthday 모델 인스턴스 생성 및 저장
+    horoscope_instance = UserBirthday(
+        birth_date=request.user.birth_date,
+        zodiac_sign=zodiac_sign,
+        horoscope=horoscope_text,
+    )
+    horoscope_instance.save()
+
+    return render(request, "horoscope.html", {"horoscope": horoscope_text})
 
 
-def _constellation_fortune(request, zodiac_sign):
+def constellation_fortune(request, zodiac_sign):
     if not request.user.is_authenticated:
         return redirect("/")
 
@@ -63,14 +76,14 @@ def _constellation_fortune(request, zodiac_sign):
             },
         ],
         temperature=0.7,
-        max_tokens=150,
+        # max_tokens=150,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
     )
 
     if response.choices:
-        horoscope = response.choices[0]["message"]["content"].strip()
-        return horoscope
+        horoscope_text = response.choices[0]["message"]["content"].strip()
+        return horoscope_text
     else:
         return "운세를 불러오는 중에 오류가 발생했습니다."

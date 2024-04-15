@@ -19,7 +19,7 @@ def daily_quote(request):
             messages=[
                 {
                     "role": "system",
-                    "content": "오늘의 새로운 좋은 글귀 한마디를  생성해주세요.",
+                    "content": "오늘의 새로운 좋은 글귀 한마디를  100자이내로 생성해주세요. 5개로 만들고 리턴은 JSON으로 해줘",
                 }
             ],
             temperature=0.7,

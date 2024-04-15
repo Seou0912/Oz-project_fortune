@@ -40,9 +40,9 @@ body {
   color: #464646;
 }
 .container {
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
   width: 440px;
   padding: 40px 32px;
   border-radius: 8px;

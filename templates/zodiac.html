@@ -1,59 +1,46 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
-    <title>오늘의 운세</title>
-    <style>
-      .logout-button {
-        background-color: #4e4e4e; /* 진한 회색 */
-        color: white; /* 글자색 흰색 */
-        border: none; /* 테두리 없음 */
-        padding: 10px 20px; /* 상하 10px, 좌우 20px의 패딩 */
-        text-align: center; /* 텍스트 가운데 정렬 */
-        display: inline-block; /* 인라인 블록으로 표시 */
-        font-size: 16px; /* 글자 크기 */
-        cursor: pointer; /* 마우스 오버 시 커서 변경 */
-      }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'zodiac.css' %}" />
+    <title>오늘의 띠별 운세</title>
   </head>
   <body>
-    <h1>오늘의 띠별 운세</h1>
-    <br />
-
-    <p>{{ user_zodiac }}</p>
-    <br />
-
-    <p>{{ today_fortune }}</p>
-    <br />
-
-    <div>
-      <a href="/dailyquote/today/" target="_blank"
-        ><button>오늘의 한마디</button></a
-      >
-      <a href="/horoscope/today/" target="_blank"
-        ><button>오늘의 별자리 운세</button></a
-      >
-      <a href="/mbti/today" target="_blank"><button>오늘의 MBTI 운세</button></a
-      ><br />
-      <br />
-      <a href="/logout/" target="_blank">
-        <button class="logout-button">Logout</button></a
-      >
+    <div class="container">
+      <div class="glass-container">
+        <nav class="navbar">
+          <div class="logo"><a href="#">{{ user.nickname }} 님</a></div>
+          <ul class="nav-links">
+            <li class="dailyquote">
+              <a href="{% url 'daily_quote' %}">오늘의 한마디</a>
+            </li>
+            &nbsp; &nbsp;
+            <li class="fortune">
+              <a href="/horoscope/today/">별자리 운세</a>
+            </li>
+            &nbsp;&nbsp;
+            <li class="mbti"><a href="/mbti/today/">MBTI 운세</a></li>
+          </ul>
+        </nav>
+        <div class="content">
+          <div class="main">
+            <h2>Hey! 👋,<br />오늘의 띠별 운세</h2>
+            <p>{{ today_fortune }}</p>
+            <a href="/allzodiac/today/all/"><button>전 체 보 기</button></a>
+          </div>
+          <div class="image-wrapper">
+            <img src="{% static 'image.png' %}" />
+            <div class="attrebute">
+              <a
+                href="https://www.freepik.com/free-psd/marketing-concept-with-woman-rocketship_33417710.htm#page=2&query=3d%20illustration&position=32&from_view=search&track=ais"
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <script src="{% static 'h.js' %}"></script>
   </body>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var quoteElement = document.querySelector("p");
-      var quoteText = quoteElement.innerText;
-      var maxLength = 150; // 총 150자를 최대 길이로 설정 (예시)
-      var breakLength = 50; // 50자마다 줄바꿈 (예시)
-      if (quoteText.length > maxLength) {
-        quoteText = quoteText.substring(0, maxLength);
-      }
-      var newText = "";
-      for (var i = 0; i < quoteText.length; i += breakLength) {
-        newText += quoteText.substring(i, i + breakLength) + "\n";
-      }
-      quoteElement.innerText = newText;
-    });
-  </script>
 </html>

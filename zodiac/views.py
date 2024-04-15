@@ -39,17 +39,50 @@ def daily_zodiac(request):
         model="gpt-4-turbo",
         messages=[
             {
-                "role": "user",
+                "role": "system",
                 "content": f"오늘은 {user_zodiac}띠가 뭘 조심하면좋은지 운세를 간단하게  500자로 생성해주세요.",
             }
         ],
         temperature=0.7,
-        max_tokens=150,
+        # max_tokens=150,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
     )
     today_fortune = response["choices"][0]["message"]["content"].strip()
+    # ai = OpenAIFortune()
+
+    print(today_fortune)
 
     # 결과를 템플릿에 전달
     return render(request, "zodiac.html", {"today_fortune": today_fortune})
+    #     },
+    # )
+
+
+# class OpenAIFortune:
+#     default_settings = {
+#         "temperature": 0.7,
+#         # max_tokens=150,
+#     }
+#     question_Dict = {"zodiac": "asdad"}
+
+#     def get_user_info(user):
+#         return {"user_zodiac": 1231}
+
+#     def openai_call(type, user):
+#         response = openai.ChatCompletion.create(
+#             model="gpt-4-turbo",
+#             messages=[
+#                 {
+#                     "role": "system",
+#                     "content": f"오늘은 {user_zodiac}띠가 뭘 조심하면좋은지 운세를 간단하게  500자로 생성해주세요.",
+#                 }
+#             ],
+#             temperature=0.7,
+#             # max_tokens=150,
+#             top_p=1.0,
+#             frequency_penalty=0.0,
+#             presence_penalty=0.0,
+#         )
+# today_fortune = response["choices"][0]["message"]["content"].strip()

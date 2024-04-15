@@ -1,6 +1,8 @@
 # 프로젝트의 urls.py
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -10,4 +12,5 @@ urlpatterns = [
     path("zodiac/", include("zodiac.urls")),  # zodiac 앱의 URL 패턴 포함
     path("horoscope/", include("horoscope.urls")),  # horoscope 앱의 URL 패턴 포함
     path("mbti/", include("mbti.urls")),  #
+    path("allzodiac/", include("allzodiac.urls")),  # allzodiac 앱의 URL 패턴 포함
 ]

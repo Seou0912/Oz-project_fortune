@@ -48,6 +48,7 @@ def signup(request):
             user.mbti = form.cleaned_data["mbti"]
             user.nickname = form.cleaned_data["nickname"]
             user.save()
+            user.backend = "django.contrib.auth.backends.ModelBackend"
             login(request, user)
             return redirect("/dailyquote/today/")
 

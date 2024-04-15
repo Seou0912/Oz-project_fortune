@@ -16,11 +16,11 @@ def Mbti(request):
         messages=[
             {
                 "role": "user",
-                "content": f"오늘의 {mbti} 맞는 오늘의 운세는 어떻게 좋게 얘기 해줄 수 있어? 500자이내로 얘기해주세요?",
+                "content": f"오늘 나의 {mbti}에 맞는 오늘의 운세는 어떻게 좋게 얘기 해줄 수 있어? 500자이내로 얘기해주세요?",
             }
         ],
         temperature=0.7,
-        max_tokens=150,
+        # max_tokens=150,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,

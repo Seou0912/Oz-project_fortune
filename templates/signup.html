@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
   <head>
@@ -8,14 +9,18 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
-    {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}" />
   </head>
   <body>
     <div class="container">
-      <h2 class="mt-5">회원가입</h2>
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %} {{ form.as_p}}
+      <h2 class="form-group">회원가입</h2>
+      <form method="POST">
+        {% csrf_token %} {% for field in form %} {{field.label_tag}}
+        <div class="form-control" outline="none">
+          {{field}}
+          <i class="form-control" outline="none"></i>
+        </div>
+        {% endfor %}
         <!-- <div class="form-group">
           <label for="email">이메일</label>
           <input
@@ -28,12 +33,12 @@
           />
         </div>
         <div class="form-group">
-          <label for="password">비밀번호</label>
+          <label for="password1">비밀번호</label>
           <input
-            type="password"
+            type="password1"
             class="form-control"
-            id="password"
-            name="password"
+            id="password1"
+            name="password1"
             placeholder="비밀번호를 입력하세요"
             required
           />

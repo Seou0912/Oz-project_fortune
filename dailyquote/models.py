@@ -2,6 +2,7 @@ from django.db import models
 
 
 class DailyQuote(models.Model):
+    # nickname = models.CharField(max_length= 10)
     date = models.DateField(unique=True)
     quote = models.TextField()
 
